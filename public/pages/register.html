@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+<!-- <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.js"></script> -->
+<script src="js/controllers.js"></script>
+
+<div ng-app="Authentication">
+    <div class="jumbotron">
+      <h2>Register</h2>
+    </div>
+    <div ng-controller="RegisterController" class="container">
+        <div ng-show="error" class="alert alert-warning">{{error}}</div>
+        <form name="form" ng-submit="register()" role="form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" name="username" class="form-control" ng-model="username" required />
+                <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" class="form-control" ng-model="password" required />
+                <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
+            </div>
+            <div class="form-group">
+              <label for="email">E-mail:</label>
+              <input type="email" name="email" class="form-control" ng-model="email" required>
+              <span ng-show="myForm.email.$error.required">Email is required.</span>
+              <span ng-show="myForm.email.$error.email">Invalid email address.</span>
+            </div>
+            <div class="form-group">
+              <label for="contact">Contact:</label>
+              <input type="number" name="contact" class="form-control" ng-model="contact" ng-minlength=10 ng-max-length=10 required>
+              <span ng-show="myForm.contact.$error.required">Email is required.</span>
+              <span ng-show="myForm.contact.$error.email">Invalid email address.</span>
+            </div>
+                <button type="submit" ng-disabled="form.$invalid || dataLoading" class="btn btn-default">Register</button>
+        </form>
+    </div>
+
+</div>
