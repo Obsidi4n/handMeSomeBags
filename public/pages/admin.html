@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+	<html>
+	<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="js/adminController.js"></script>
+    <title>Cove</title>
+    <style>
+      #main
+      {
+      	margin-top: 50px;
+      }
+      th,td
+      {
+      	text-align: center;
+      }
+      .right
+      {
+      	float: right;
+      }
+      .active
+      {
+      	font-weight: bold;
+      }
+      .unverified
+      {
+      	background-color: #E7B285;
+      }
+      .dbUpdateNeeded
+      {
+      	background-color: #E9E95D;
+      }
+    </style>
+<body ng-app="Administration" ng-controller="AdminController">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Admin Dashboard</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li ng-click="logout()"><a href="#">Logout</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input class="form-control" placeholder="Search..." type="text">
+          </form>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid" id="main">
+	    <div class="row">
+	        <div class="col-sm-3 col-md-2 sidebar">
+	          <ul class="nav nav-sidebar">
+	            <!-- <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li> -->
+	            <li class="sidenav active" ng-click="switchView()"><a href="#">Requests</a></li>
+	            <li class="sidenav" ng-click="switchView()"><a href="#">Users</a></li>
+	        </div>
+	        <div class="col-md-8 col-md-offset-1 main">
+	          <h1 class="page-header">Requests</h1>
+	          <div>
+	          	<button type="button" class="btn btn-default" ng-click="getRequests()">Retrieve Requests</button>
+	          	<div class="right" ng-show="requestQueried">
+	          		Requests found: {{ requests.length }} 
+	          	</div>
+	          </div>
+	          <div class="table-responsive">
+	            <table class="table table-striped">
+	              <thead>
+	                <tr>
+	                  <th>ID</th>
+	                  <th>User</th>
+	                  <th>Type</th>
+	                  <th>Qty (kg)</th>
+	                  <th>From</th>
+	                  <th>To</th>
+	                  <th>Verified</th>
+	                </tr>
+	              </thead>
+	              <tbody>
+	                <tr ng-repeat="request in requests">
+	                  <td>{{request.id}}</td>
+	                  <td>{{request.username}}</td>
+	                  <td>{{request.type}}</td>
+	                  <td>{{request.quantity}}</td>
+	                  <td>{{request.from}}</td>
+	                  <td>{{request.to}}</td> 
+	                  <td>
+	                  	<i ng-class="{ 'glyphicon':true, 'glyphicon-ok':request.verified, 'glyphicon-remove':!request.verified }"></i>
+	                  </td>	                  
+	                </tr>
+	              </tbody>
+	            </table>
+	          </div>
+	          <h1 class="page-header">Users</h1>
+    		  <div>
+	          	<button type="button" class="btn btn-default" ng-click="getUsers()">Retrieve Users</button>
+	          	<div class="right" ng-show="usersQueried">
+	          		Users found: {{ users.length }} 
+	          	</div>
+	          </div>
+	          <div class="table-responsive">
+	            <table class="table">
+	              <thead>
+	                <tr>
+	                  <th>#</th>
+	                  <th>User</th>
+	                  <th>First</th>
+	                  <th>Last</th>
+	                  <th>Email</th>
+	                  <th>EmailV</th>
+	                  <th>Phone</th>
+	                  <th>PhoneV</th>
+	                  <th>Active</th>
+	                </tr>
+	              </thead>
+	              <tbody>
+	                <tr ng-repeat="user in users" ng-class="{ 'dbUpdateNeeded' : !user.dbUpdated, 'unverified' : !(user.verification_email && user.verification_phone) }">
+	                  <td>{{$index+1}}</td> 
+	                  <td>{{user.username}}</td>
+	                  <td>{{user.first_name}}</td>
+	                  <td>{{user.last_name}}</td>
+	                  <td>{{user.email}}</td>
+	                  <td>
+	                  	<i ng-class="{ 'glyphicon':true, 'glyphicon-ok':user.verification_email, 'glyphicon-remove':!user.verification_email }" ng-click="updateFlag($index, 'verification_email')"></i>
+	                  </td>
+	                  <td>{{user.phone_number}}</td>
+	                  <td>
+	                  	<i ng-class="{ 'glyphicon':true, 'glyphicon-ok':user.verification_phone, 'glyphicon-remove':!user.verification_phone }" ng-click="updateFlag($index, 'verification_phone')"></i>
+	                  </td>	 
+	                  <td>
+	                  	{{ user.verification_email && user.verification_phone ? 'Active' : 'Inactive '}}
+	                  </td>
+	                  <td>
+	                  	<button type="button" class="btn btn-default" ng-click="updateDB($index)">Update DB</button>
+	                  </td>                 
+	                </tr>
+	              </tbody>
+	            </table>
+	          </div>
+	        </div>
+	    </div>
+    </div>
+
+</body>
+</html>
