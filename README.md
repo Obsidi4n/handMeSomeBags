@@ -1,2 +1,1 @@
 # handMeSomeBags
-A vague project
